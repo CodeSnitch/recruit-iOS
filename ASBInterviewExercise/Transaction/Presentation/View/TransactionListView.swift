@@ -8,10 +8,18 @@ import SwiftUI
 import Combine
 
 struct TransactionListView: View {
+    var transactionList: [Transaction]
+    @State private var selectedTransaction: Transaction?
     var body: some View {
         NavigationView {
             List {
-                
+                ForEach(transactionList) { transaction in
+                    Button(action: {
+                        selectedTransaction = transaction
+                    }) {
+                        TransactionRow(transaction: transaction)
+                    }
+                }
             }
         }
     }
@@ -46,5 +54,12 @@ struct TransactionRow_Previews: PreviewProvider {
             TransactionRow(transaction: transactionsFromEntities[2])
         }
         .previewLayout(.sizeThatFits) // Important for list row previews
+    }
+}
+
+// Preview for TransactionList
+struct TransactionList_Preview: PreviewProvider {
+    static var previews: some View {
+        TransactionListView(transactionList: transactionsFromEntities)
     }
 }
