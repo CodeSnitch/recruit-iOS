@@ -14,10 +14,10 @@ class RemoteTransactionDataSource {
         }
 
         return URLSession.shared.dataTaskPublisher(for: url)
-            .map(\.data) // Extract data from the response
+            .map(\.data)
             .decode(type: [TransactionEntity].self, decoder: JSONDecoder())
             .mapError { error -> Error in
-                print("Network or Decoding error: \(error)") // Log the error
+                print("Network or Decoding error: \(error)")
                 return error
             }
             .eraseToAnyPublisher()
