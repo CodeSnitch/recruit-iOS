@@ -22,6 +22,13 @@ struct TransactionListView: View {
                 }
             }
         }
+        .navigationTitle("Transactions")
+        .onAppear{
+            viewModel.fetchTransactions()
+        }
+        .sheet(item: $selectedTransaction) { transaction in
+            TransactionDetailView(viewModel: TransactionDetailViewViewModel(transaction: transaction))
+        }
     }
 }
 
@@ -34,6 +41,23 @@ struct TransactionRow: View {
             Spacer()
             Text(transaction.debit > 0 ? "-\(transaction.debit, specifier: "%.2f")" : "+\(transaction.credit, specifier: "%.2f")")
         }
+    }
+}
+
+struct TransactionDetailView: View {
+    @ObservedObject var viewModel: TransactionDetailViewViewModel
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Summary: \(viewModel.transaction.summary)")
+                .font(.title)
+            Text("Date: \(viewModel.transaction.transactionDate))")
+            Text("Debit: \(viewModel.transaction.debit, specifier: "%.2f")")
+            Text("Credit: \(viewModel.transaction.credit, specifier: "%.2f")")
+            Spacer()
+        }
+        .padding()
+        .navigationTitle("Transaction Detail")
     }
 }
 
@@ -58,8 +82,8 @@ struct TransactionRow_Previews: PreviewProvider {
 }
 
 // Preview for TransactionList
-struct TransactionList_Preview: PreviewProvider {
-    static var previews: some View {
+//struct TransactionList_Preview: PreviewProvider {
+//    static var previews: some View {
 //        TransactionListView(transactionList: transactionsFromEntities)
-    }
-}
+//    }
+//}
