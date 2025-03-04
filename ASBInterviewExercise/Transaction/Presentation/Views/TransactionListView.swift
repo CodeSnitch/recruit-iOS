@@ -13,11 +13,21 @@ struct TransactionListView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.transactions) { transaction in
-                    Button(action: {
-                        selectedTransaction = transaction
-                    }) {
-                        TransactionRow(transaction: transaction)
+                if viewModel.isLoading {
+                    ProgressView()
+                        .accessibility(label: Text("Loading transactions"))
+                } else if let errorMessage = viewModel.errorMessage {
+                    Text("Error: \(errorMessage)")
+                        .foregroundColor(.red)
+                        .accessibility(label: Text("Error: \(errorMessage)"))
+                } else {
+                    ForEach(viewModel.transactions) { transaction in
+                        Button(action: {
+                            selectedTransaction = transaction
+                        }) {
+                            TransactionRow(transaction: transaction)
+                        }
+                        .accessibility(hint: Text("Tap to view details"))
                     }
                 }
             }

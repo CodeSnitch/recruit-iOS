@@ -25,7 +25,7 @@ struct TransactionDetailView: View {
                 .foregroundColor(.green)
                 .accessibility(label: Text("Credit, \(viewModel.transaction.credit, specifier: "%.2f")"))
             Text("GST (15%): \(viewModel.transaction.gst, specifier: "%.2f")")
-              .accessibility(label: Text("GST 15 percent, \(viewModel.transaction.gst, specifier: "%.2f")"))//Talkback
+              .accessibility(label: Text("GST 15 percent, \(viewModel.transaction.gst, specifier: "%.2f")"))
             Spacer()
         }
         .padding()

@@ -9,6 +9,8 @@ import SwiftUI
 
 class TransactionListViewModel: ObservableObject {
     @Published var transactions: [Transaction] = []
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String? = nil
     
     private let fetchTransactionsUseCase: FetchTransactionUseCaseProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -18,18 +20,22 @@ class TransactionListViewModel: ObservableObject {
     }
     
     func fetchTransactions() {
-            fetchTransactionsUseCase.execute()
-                .receive(on: DispatchQueue.main)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        break
-                    case .failure(let error):
-                        print("Error fetching transactions: \(error)")
-                    }
-                }, receiveValue: { [weak self] transactions in
-                    self?.transactions = transactions
-                })
-                .store(in: &cancellables)
-        }
+        isLoading = true
+        errorMessage = nil
+        fetchTransactionsUseCase.execute()
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    print("Error fetching transactions: \(error)")
+                }
+            }, receiveValue: { [weak self] transactions in
+                self?.transactions = transactions
+            })
+            .store(in: &cancellables)
+    }
 }
