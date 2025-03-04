@@ -22,4 +22,12 @@ struct Transaction: Identifiable {
         self.debit = entity.debit
         self.credit = entity.credit
     }
+    
+    //format date
+    func getFormattedDate() -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        return formatter.string(from: transactionDate)
+    }
 }

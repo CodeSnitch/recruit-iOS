@@ -18,6 +18,9 @@ class FetchTransactionUseCase: FetchTransactionUseCaseProtocol {
             .map { entities in
                 entities.map{ Transaction(from: $0)} // Convert entity to domain model
             }
+            .map { transactions in
+                transactions.sorted { $0.transactionDate > $1.transactionDate } // Sort by date (descending)
+            }
             .eraseToAnyPublisher()
     }
 }

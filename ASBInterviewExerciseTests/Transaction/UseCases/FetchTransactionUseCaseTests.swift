@@ -48,4 +48,36 @@ class FetchTransactionUseCaseTests: XCTestCase {
         }
         
     }
+    
+    func testExecute_SortsTransactionsByDateDescending() {
+        // 1. Arrange:
+        let mockDataSource = MockTransactionDataSource()
+        let remoteDataSource = RemoteTransactionDataSource()
+        let mockRepository = TransactionRepository(remoteDataSource: remoteDataSource, mockDataSource: mockDataSource)
+        let useCase = FetchTransactionUseCase(repository: mockRepository)
+        let expectation = XCTestExpectation(description: "Transactions are sorted by date")
+        var receivedTransactions: [Transaction]?
+
+        // 2. Act:
+        let cancellable = useCase.execute()
+            .sink(receiveCompletion: { _ in expectation.fulfill() },
+                  receiveValue: { transactions in
+                      receivedTransactions = transactions
+                  })
+        wait(for: [expectation], timeout: 5.0)
+        cancellable.cancel()
+
+        // 3. Assert:
+        guard let transactions = receivedTransactions else {
+            XCTFail("No transactions received")
+            return
+        }
+
+        XCTAssertFalse(transactions.isEmpty, "Transactions array should not be empty")
+
+        // Check if the array is sorted in descending order by date
+        for i in 0..<(transactions.count - 1) {
+            XCTAssertGreaterThanOrEqual(transactions[i].transactionDate, transactions[i+1].transactionDate, "Transactions are not sorted correctly")
+        }
+    }
 }
