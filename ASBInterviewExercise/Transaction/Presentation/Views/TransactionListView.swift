@@ -8,12 +8,12 @@ import SwiftUI
 import Combine
 
 struct TransactionListView: View {
-    var transactionList: [Transaction]
+    @ObservedObject var viewModel: TransactionListViewModel
     @State private var selectedTransaction: Transaction?
     var body: some View {
         NavigationView {
             List {
-                ForEach(transactionList) { transaction in
+                ForEach(viewModel.transactions) { transaction in
                     Button(action: {
                         selectedTransaction = transaction
                     }) {
@@ -60,6 +60,6 @@ struct TransactionRow_Previews: PreviewProvider {
 // Preview for TransactionList
 struct TransactionList_Preview: PreviewProvider {
     static var previews: some View {
-        TransactionListView(transactionList: transactionsFromEntities)
+//        TransactionListView(transactionList: transactionsFromEntities)
     }
 }
